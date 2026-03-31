@@ -1,14 +1,20 @@
 from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
-# 🔥 Direct MongoDB connection (no .env dependency)
-client = MongoClient("mongodb://localhost:27017")
+# Load .env file
+load_dotenv()
 
-# 🔥 Database
-db = client["ticket_system"]
+MONGO_URI = os.environ.get("MONGO_URI")
 
-# 🔥 Connection test
+if not MONGO_URI:
+    raise Exception("MONGO_URI not found in environment variables")
+
+client = MongoClient(MONGO_URI)
+db = client["ticketDB"]
+
 try:
     client.admin.command("ping")
-    print("✅ MongoDB Connected")
+    print("MongoDB Connected Successfully")
 except Exception as e:
-    print("❌ MongoDB Connection Failed:", e)
+    print("MongoDB Connection Failed:", e)
