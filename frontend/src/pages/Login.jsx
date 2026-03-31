@@ -1,40 +1,55 @@
-import { useState } from "react";
-import API from "../services/api";
+import React, { useState } from "react";
+import { loginUser } from "../services/api";
 
-export default function Login() {
-  const [data, setData] = useState({ email: "", password: "" });
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const res = await API.post("/login", data);
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userId", res.data.userId);
+    const res = await loginUser({
+      email,
+      password,
+    });
 
-      alert("Login Success");
-      window.location = "/events";
+    console.log("Login Response:", res);
 
-    } catch (err) {
-      alert(err.response?.data?.detail || "Error");
+    if (res?.token) {
+      alert("Login Successful ✅");
+      localStorage.setItem("token", res.token);
+    } else {
+      alert(res?.message || "Login Failed ❌");
     }
   };
 
   return (
-    <div>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h2>Login</h2>
 
-      <input
-        placeholder="Email"
-        onChange={(e) => setData({ ...data, email: e.target.value })}
-      />
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <br /><br />
 
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setData({ ...data, password: e.target.value })}
-      />
+        <input
+          type="password"
+          placeholder="Enter Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <br /><br />
 
-      <button onClick={handleLogin}>Login</button>
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Login;

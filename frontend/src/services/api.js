@@ -1,23 +1,35 @@
-import axios from "axios";
-
-// 🔥 Backend base URL
 const BASE_URL = "https://ticket-system-8zeq.onrender.com";
 
-export const API = {
-  login: `${BASE_URL}/login`,
-  register: `${BASE_URL}/register`,
-  events: `${BASE_URL}/events`,
-  book: `${BASE_URL}/book`,
-};
-// 🔐 Token automatically attach
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
+// 🔹 LOGIN API
+export const loginUser = async (data) => {
+  try {
+    const res = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
+    return await res.json();
+  } catch (error) {
+    console.error("Login API Error:", error);
   }
+};
 
-  return req;
-});
+// 🔹 REGISTER API
+export const registerUser = async (data) => {
+  try {
+    const res = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-export default API;
+    return await res.json();
+  } catch (error) {
+    console.error("Register API Error:", error);
+  }
+};
