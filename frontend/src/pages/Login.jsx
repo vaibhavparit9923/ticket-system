@@ -8,18 +8,33 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await loginUser({
-      email,
-      password,
-    });
+    try {
+      const res = await loginUser({
+        email,
+        password,
+      });
 
-    console.log("Login Response:", res);
+      console.log("Login Response:", res);
 
-    if (res?.token) {
-      alert("Login Successful ✅");
-      localStorage.setItem("token", res.token);
-    } else {
-      alert(res?.message || "Login Failed ❌");
+      if (!res) {
+        alert("Server Error ❌");
+        return;
+      }
+
+      if (res.token) {
+        alert("Login Successful ✅");
+
+        // Save token
+        localStorage.setItem("token", res.token);
+
+        // OPTIONAL: redirect (future use)
+        window.location.href = "/";
+      } else {
+        alert(res.message || "Invalid Credentials ❌");
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      alert("Something went wrong ❌");
     }
   };
 
